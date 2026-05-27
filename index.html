@@ -1,0 +1,678 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Stripe Error Code Reference</title>
+<meta name="description" content="Structured reference of Stripe API error codes, decline codes, and handling strategies.">
+<meta property="og:title" content="Stripe Error Code Reference">
+<meta property="og:description" content="Structured reference of Stripe API error codes, decline codes, and handling strategies.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://swifttechco.com/services/finance/fintech-platform">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:#0d0d1a;color:#e2e8f0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.6;min-height:100vh}
+a{color:#D4A843;text-decoration:none}a:hover{text-decoration:underline}
+img{max-width:100%}
+nav{position:fixed;top:0;left:0;right:0;z-index:99;background:rgba(13,13,26,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(212,168,67,0.15);height:60px;display:flex;align-items:center;padding:0 24px;gap:20px}
+nav .logo{font-weight:800;font-size:15px;color:#fff;white-space:nowrap}
+nav .logo span{color:#D4A843}
+nav .spacer{flex:1}
+nav a.nav-link{font-size:13px;color:rgba(255,255,255,0.6);font-weight:600}
+nav a.nav-link:hover{color:#fff;text-decoration:none}
+nav a.cta-btn{font-size:12px;font-weight:700;padding:7px 18px;border-radius:8px;background:#D4A843;color:#000;white-space:nowrap}
+nav a.cta-btn:hover{text-decoration:none;opacity:0.9}
+.hero{padding:100px 24px 56px;max-width:900px;margin:0 auto;text-align:center}
+.hero .badge{display:inline-flex;align-items:center;gap:8px;background:rgba(212,168,67,0.12);border:1px solid rgba(212,168,67,0.3);border-radius:100px;padding:5px 16px;margin-bottom:24px;font-size:11px;font-weight:700;color:#D4A843;letter-spacing:0.12em;text-transform:uppercase}
+.hero h1{font-size:clamp(26px,5vw,46px);font-weight:900;color:#fff;line-height:1.1;margin-bottom:16px;letter-spacing:-0.02em}
+.hero .sub{font-size:16px;color:rgba(255,255,255,0.55);max-width:600px;margin:0 auto 32px;line-height:1.7}
+.hero .actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;background:#D4A843;color:#000;padding:12px 28px;border-radius:10px;font-size:14px;font-weight:800;text-decoration:none}
+.btn-primary:hover{text-decoration:none;opacity:0.9}
+.btn-secondary{display:inline-flex;align-items:center;gap:8px;background:transparent;color:#fff;padding:12px 28px;border-radius:10px;font-size:14px;font-weight:700;border:1px solid rgba(255,255,255,0.15);text-decoration:none}
+.btn-secondary:hover{background:rgba(255,255,255,0.06);text-decoration:none}
+.section{max-width:960px;margin:0 auto;padding:48px 24px}
+.section-title{font-size:clamp(18px,3vw,26px);font-weight:800;color:#fff;margin-bottom:8px}
+.section-sub{font-size:14px;color:rgba(255,255,255,0.45);margin-bottom:32px}
+.card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:28px}
+.gold{color:#D4A843}
+.rating-bar{display:flex;gap:4px;align-items:center}
+.rating-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.dot-fill{background:#D4A843}
+.dot-empty{background:rgba(255,255,255,0.12)}
+footer{border-top:1px solid rgba(255,255,255,0.07);padding:32px 24px;text-align:center}
+footer p{font-size:13px;color:rgba(255,255,255,0.35)}
+footer a{color:#D4A843}
+@media(max-width:600px){nav .nav-link{display:none}.section{padding:32px 16px}.hero{padding:80px 16px 40px}}
+
+.search-bar{width:100%;padding:12px 18px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:#fff;font-size:14px;outline:none;margin-bottom:16px}
+.search-bar::placeholder{color:rgba(255,255,255,0.3)}
+.search-bar:focus{border-color:rgba(212,168,67,0.4)}
+.cat-btn{padding:5px 14px;border-radius:100px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:rgba(255,255,255,0.5);font-size:11px;font-weight:700;cursor:pointer;transition:all 0.15s}
+.cat-btn:hover,.cat-btn.active{background:rgba(212,168,67,0.15);border-color:rgba(212,168,67,0.4);color:#D4A843}
+.cat-btn.all-btn.active{background:rgba(212,168,67,0.15);border-color:rgba(212,168,67,0.4);color:#D4A843}
+.error-table{width:100%;border-collapse:collapse;font-size:13px}
+.error-table th{font-size:10px;font-weight:700;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;padding:10px 12px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.08)}
+.error-table td{padding:12px 12px;vertical-align:top;border-bottom:1px solid rgba(255,255,255,0.05)}
+.error-table tr:hover td{background:rgba(255,255,255,0.025)}
+code{font-family:"JetBrains Mono",monospace;font-size:11px;background:rgba(255,255,255,0.07);padding:1px 6px;border-radius:4px;color:rgba(255,255,255,0.7)}
+.count{font-size:12px;color:rgba(255,255,255,0.35);margin-bottom:16px}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="https://swifttechco.com">Swift <span>Tech Co.</span></a>
+  <span class="spacer"></span>
+  <a class="nav-link" href="https://swifttechco.com/tools">Free Tools</a>
+  <a class="nav-link" href="https://swifttechco.com/blog">Blog</a>
+  <a class="cta-btn" href="https://swifttechco.com/services/finance/fintech-platform" target="_blank" rel="noopener">Full Analysis &rarr;</a>
+</nav>
+<div class="hero">
+  <div class="badge">Error Reference</div>
+  <h1>Stripe Error Code Reference</h1>
+  <p class="sub">Structured reference of Stripe API error codes, decline codes, and handling strategies.</p>
+  <div class="actions">
+    <a class="btn-primary" href="https://swifttechco.com/services/finance/fintech-platform" target="_blank" rel="noopener">FinTech and Payments Services &rarr;</a>
+    <a class="btn-secondary" href="https://swifttechco.com/tools" target="_blank" rel="noopener">Free Tools</a>
+  </div>
+</div>
+
+<div class="section">
+  <div class="card" style="padding:20px 24px">
+    <input class="search-bar" type="search" placeholder="Search errors, codes, causes, fixes..." id="searchInput" oninput="doSearch()">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+      <button class="cat-btn all-btn active" data-cat="all" onclick="filterCat(this)">All (50)</button>
+      <button class="cat-btn" data-cat="3d secure / sca" onclick="filterCat(this)">3D Secure / SCA</button>
+<button class="cat-btn" data-cat="ach / bank transfers" onclick="filterCat(this)">ACH / Bank Transfers</button>
+<button class="cat-btn" data-cat="authentication" onclick="filterCat(this)">Authentication</button>
+<button class="cat-btn" data-cat="card decline" onclick="filterCat(this)">Card Decline</button>
+<button class="cat-btn" data-cat="card error" onclick="filterCat(this)">Card Error</button>
+<button class="cat-btn" data-cat="charges" onclick="filterCat(this)">Charges</button>
+<button class="cat-btn" data-cat="connect" onclick="filterCat(this)">Connect</button>
+<button class="cat-btn" data-cat="connect / transfers" onclick="filterCat(this)">Connect / Transfers</button>
+<button class="cat-btn" data-cat="connectivity" onclick="filterCat(this)">Connectivity</button>
+<button class="cat-btn" data-cat="coupons" onclick="filterCat(this)">Coupons</button>
+<button class="cat-btn" data-cat="currency" onclick="filterCat(this)">Currency</button>
+<button class="cat-btn" data-cat="customer" onclick="filterCat(this)">Customer</button>
+<button class="cat-btn" data-cat="disputes" onclick="filterCat(this)">Disputes</button>
+<button class="cat-btn" data-cat="financial connections" onclick="filterCat(this)">Financial Connections</button>
+<button class="cat-btn" data-cat="idempotency" onclick="filterCat(this)">Idempotency</button>
+<button class="cat-btn" data-cat="invoices" onclick="filterCat(this)">Invoices</button>
+<button class="cat-btn" data-cat="payment intents" onclick="filterCat(this)">Payment Intents</button>
+<button class="cat-btn" data-cat="payment methods" onclick="filterCat(this)">Payment Methods</button>
+<button class="cat-btn" data-cat="payouts" onclick="filterCat(this)">Payouts</button>
+<button class="cat-btn" data-cat="rate limiting" onclick="filterCat(this)">Rate Limiting</button>
+<button class="cat-btn" data-cat="refunds" onclick="filterCat(this)">Refunds</button>
+<button class="cat-btn" data-cat="request error" onclick="filterCat(this)">Request Error</button>
+<button class="cat-btn" data-cat="sepa / ach" onclick="filterCat(this)">SEPA / ACH</button>
+<button class="cat-btn" data-cat="setup intents" onclick="filterCat(this)">Setup Intents</button>
+<button class="cat-btn" data-cat="stripe server error" onclick="filterCat(this)">Stripe Server Error</button>
+<button class="cat-btn" data-cat="subscriptions" onclick="filterCat(this)">Subscriptions</button>
+<button class="cat-btn" data-cat="subscriptions / sca" onclick="filterCat(this)">Subscriptions / SCA</button>
+<button class="cat-btn" data-cat="tax" onclick="filterCat(this)">Tax</button>
+<button class="cat-btn" data-cat="testing" onclick="filterCat(this)">Testing</button>
+<button class="cat-btn" data-cat="webhooks" onclick="filterCat(this)">Webhooks</button>
+    </div>
+    <div class="count" id="countLabel">50 errors</div>
+    <div style="overflow-x:auto">
+      <table class="error-table" id="errorTable">
+        <thead><tr>
+          <th>Error</th>
+          <th>Category</th>
+          <th>Cause</th>
+          <th>Fix</th>
+          <th>Retryable</th>
+        </tr></thead>
+        <tbody id="errorBody">
+          <tr data-cat="card decline" data-search="card_declined card_declined the card was declined by the issuing bank. the decline_code field provides more specific detail. check the decline_code for specifics. do not retry without user action. ask the customer to contact their bank or use a different card. never share the raw decline_code with the user. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">card_declined</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Card Decline</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">The card was declined by the issuing bank. The decline_code field provides more specific detail.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Check the decline_code for specifics. Do not retry without user action. Ask the customer to contact their bank or use a different card. Never share the raw decline_code with the user.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="card decline" data-search="card_declined card_declined the card does not have enough funds to complete the purchase. ask the customer to use a different card or add funds. do not retry the same card. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">card_declined</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Card Decline</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">The card does not have enough funds to complete the purchase.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Ask the customer to use a different card or add funds. Do not retry the same card.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="card decline" data-search="card_declined card_declined the card has been reported lost by the cardholder. do not reveal this reason to avoid tipping off fraudsters. show generic decline message. flag the transaction for review. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">card_declined</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Card Decline</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">The card has been reported lost by the cardholder.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Do not reveal this reason to avoid tipping off fraudsters. Show generic decline message. Flag the transaction for review.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="card decline" data-search="card_declined card_declined the card has been reported stolen by the cardholder. do not reveal the specific reason. flag for fraud review. block the user session if warranted. show generic decline message. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">card_declined</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Card Decline</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">The card has been reported stolen by the cardholder.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Do not reveal the specific reason. Flag for fraud review. Block the user session if warranted. Show generic decline message.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="card decline" data-search="card_declined card_declined generic decline from the issuing bank with no specific reason provided. ask the customer to contact their bank. they may need to whitelist the merchant or authorize the transaction. retry after bank contact. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">card_declined</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Card Decline</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">Generic decline from the issuing bank with no specific reason provided.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Ask the customer to contact their bank. They may need to whitelist the merchant or authorize the transaction. Retry after bank contact.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="card decline" data-search="card_declined card_declined the transaction type is not permitted for this card. common with prepaid cards trying to pay for subscriptions, or corporate cards with merchant category restrictions. ask the customer to use a different card. debit or prepaid cards often have restrictions on recurring billing. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">card_declined</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Card Decline</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">The transaction type is not permitted for this card. Common with prepaid cards trying to pay for subscriptions, or corporate cards with merchant category restrictions.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Ask the customer to use a different card. Debit or prepaid cards often have restrictions on recurring billing.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="card decline" data-search="card_declined card_declined the card has exceeded its spending limit for a given time period, as configured by the issuing bank. ask the customer to contact their bank to increase limits or use a different card. implement retry backoff if retrying failed subscription charges. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">card_declined</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Card Decline</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">The card has exceeded its spending limit for a given time period, as configured by the issuing bank.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Ask the customer to contact their bank to increase limits or use a different card. Implement retry backoff if retrying failed subscription charges.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="card error" data-search="expired_card expired_card the card's expiration date is in the past. prompt the customer to update their card details. use stripe's hosted payment ui (checkout, payment element) which validates expiry client-side before submission. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">expired_card</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Card Error</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">The card's expiration date is in the past.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Prompt the customer to update their card details. Use Stripe's hosted payment UI (Checkout, Payment Element) which validates expiry client-side before submission.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="card error" data-search="incorrect_cvc incorrect_cvc the cvc/cvv number provided does not match the card. ask the customer to re-enter the cvc. after multiple incorrect attempts, the card may be blocked by the bank. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">incorrect_cvc</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Card Error</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">The CVC/CVV number provided does not match the card.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Ask the customer to re-enter the CVC. After multiple incorrect attempts, the card may be blocked by the bank.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="card error" data-search="incorrect_number incorrect_number the card number fails luhn algorithm validation or does not match a known card number format. validate card numbers client-side using stripe.js or a luhn check before submission to avoid unnecessary api calls. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">incorrect_number</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Card Error</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">The card number fails Luhn algorithm validation or does not match a known card number format.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Validate card numbers client-side using Stripe.js or a Luhn check before submission to avoid unnecessary API calls.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="card error" data-search="invalid_expiry_month invalid_expiry_month the expiry month is not a valid value (1-12). validate expiry input client-side. stripe.js handles this automatically when using the payment element. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">invalid_expiry_month</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Card Error</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">The expiry month is not a valid value (1-12).</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Validate expiry input client-side. Stripe.js handles this automatically when using the Payment Element.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="card error" data-search="invalid_expiry_year invalid_expiry_year the expiry year is in the past or not a valid year. validate expiry year client-side. prefer 2-digit year input that auto-converts to the nearest valid year. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">invalid_expiry_year</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Card Error</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">The expiry year is in the past or not a valid year.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Validate expiry year client-side. Prefer 2-digit year input that auto-converts to the nearest valid year.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="3d secure / sca" data-search="authentication_required authentication_required the payment requires 3d secure (sca) authentication and the charge was attempted without it, or the customer did not complete 3ds. use paymentintents with `stripe.confirmcardpayment()` to handle 3ds automatically. check `payment_intent.next_action` for redirect details. never charge cards directly in sca-required regions. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">authentication_required</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">3D Secure / SCA</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">The payment requires 3D Secure (SCA) authentication and the charge was attempted without it, or the customer did not complete 3DS.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Use PaymentIntents with `stripe.confirmCardPayment()` to handle 3DS automatically. Check `payment_intent.next_action` for redirect details. Never charge cards directly in SCA-required regions.</td>
+  <td style="font-size:11px;color:#4ade80;text-align:center">Yes</td>
+</tr>
+<tr data-cat="authentication" data-search="invalid_api_key invalid_api_key the api key used is invalid, revoked, or a test key is being used in live mode (or vice versa). verify the api key in your stripe dashboard. ensure you are using the correct key for the environment (test vs live). never expose secret keys in client-side code. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">invalid_api_key</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Authentication</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">The API key used is invalid, revoked, or a test key is being used in live mode (or vice versa).</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Verify the API key in your Stripe Dashboard. Ensure you are using the correct key for the environment (test vs live). Never expose secret keys in client-side code.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="authentication" data-search="no_account no_account no stripe account was found matching the provided api key or connect account id. verify the stripe-account header (for connect) contains a valid connected account id. check that the account has not been deactivated. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">no_account</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Authentication</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">No Stripe account was found matching the provided API key or connect account ID.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Verify the Stripe-Account header (for Connect) contains a valid connected account ID. Check that the account has not been deactivated.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="rate limiting" data-search="rate_limit rate_limit too many requests made to the stripe api in too short a time. implement exponential backoff with jitter. start with 1s, double each retry, up to 8 retries. check your api usage in the stripe dashboard. batch operations where possible. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">rate_limit</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Rate Limiting</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">Too many requests made to the Stripe API in too short a time.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Implement exponential backoff with jitter. Start with 1s, double each retry, up to 8 retries. Check your API usage in the Stripe Dashboard. Batch operations where possible.</td>
+  <td style="font-size:11px;color:#4ade80;text-align:center">Yes</td>
+</tr>
+<tr data-cat="request error" data-search="resource_missing resource_missing the resource (customer, payment method, invoice, subscription) does not exist or does not belong to the current api key's account. verify the resource id is correct and exists in the right stripe account. test vs live mode resources are separate. log the resource id for debugging. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">resource_missing</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Request Error</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">The resource (customer, payment method, invoice, subscription) does not exist or does not belong to the current API key's account.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Verify the resource ID is correct and exists in the right Stripe account. Test vs live mode resources are separate. Log the resource ID for debugging.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="request error" data-search="parameter_missing parameter_missing a required parameter was not included in the api request. check the stripe api docs for required parameters. the error message will name the missing parameter. enable stripe request logging in development mode. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">parameter_missing</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Request Error</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">A required parameter was not included in the API request.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Check the Stripe API docs for required parameters. The error message will name the missing parameter. Enable Stripe request logging in development mode.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="request error" data-search="parameter_invalid_empty parameter_invalid_empty a parameter was passed as an empty string where a non-empty value is required. validate all parameters before sending to the api. do not pass empty strings for required fields; omit them entirely or pass null. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">parameter_invalid_empty</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Request Error</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">A parameter was passed as an empty string where a non-empty value is required.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Validate all parameters before sending to the API. Do not pass empty strings for required fields; omit them entirely or pass null.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="idempotency" data-search="idempotency_key_in_use idempotency_key_in_use a request is still in progress for this idempotency key. concurrent requests with the same idempotency key are not allowed. wait for the in-flight request to complete before retrying with the same idempotency key. implement proper retry logic that respects in-progress requests. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">idempotency_key_in_use</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Idempotency</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">A request is still in progress for this idempotency key. Concurrent requests with the same idempotency key are not allowed.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Wait for the in-flight request to complete before retrying with the same idempotency key. Implement proper retry logic that respects in-progress requests.</td>
+  <td style="font-size:11px;color:#4ade80;text-align:center">Yes</td>
+</tr>
+<tr data-cat="idempotency" data-search="invalid_idempotency_key invalid_idempotency_key two requests used the same idempotency key but with different parameters — the key was not unique enough or was accidentally reused. generate idempotency keys as uuids tied to the specific action (e.g. order id + attempt number). never reuse keys across different operations. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">invalid_idempotency_key</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Idempotency</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">Two requests used the same idempotency key but with different parameters — the key was not unique enough or was accidentally reused.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Generate idempotency keys as UUIDs tied to the specific action (e.g. order ID + attempt number). Never reuse keys across different operations.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="subscriptions / sca" data-search="subscription_payment_intent_requires_action subscription_payment_intent_requires_action an automatic subscription renewal requires 3ds authentication. this happens for sca-mandated regions (eea, uk) when the renewal cannot use off-session exemptions. use `payment_intent.client_secret` from the invoice and redirect the customer to complete 3ds. implement the subscription incomplete webhook flow with `invoice.payment_action_required` event. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">subscription_payment_intent_requires_action</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Subscriptions / SCA</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">An automatic subscription renewal requires 3DS authentication. This happens for SCA-mandated regions (EEA, UK) when the renewal cannot use off-session exemptions.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Use `payment_intent.client_secret` from the invoice and redirect the customer to complete 3DS. Implement the subscription incomplete webhook flow with `invoice.payment_action_required` event.</td>
+  <td style="font-size:11px;color:#4ade80;text-align:center">Yes</td>
+</tr>
+<tr data-cat="invoices" data-search="invoice_upcoming_none invoice_upcoming_none attempting to retrieve an upcoming invoice for a customer with no active subscription. check whether the customer has an active subscription before calling `stripe.invoices.retrieveupcoming()`. handle the 404 as an expected case. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">invoice_upcoming_none</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Invoices</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">Attempting to retrieve an upcoming invoice for a customer with no active subscription.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Check whether the customer has an active subscription before calling `stripe.invoices.retrieveUpcoming()`. Handle the 404 as an expected case.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="tax" data-search="customer_tax_location_invalid customer_tax_location_invalid stripe tax cannot determine the customer's tax location because the address is incomplete, invalid, or conflicts between the shipping and billing address. collect complete customer addresses (line1, city, postal_code, country). validate addresses before sending to stripe. check stripe tax configuration in the dashboard. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">customer_tax_location_invalid</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Tax</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">Stripe Tax cannot determine the customer's tax location because the address is incomplete, invalid, or conflicts between the shipping and billing address.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Collect complete customer addresses (line1, city, postal_code, country). Validate addresses before sending to Stripe. Check Stripe Tax configuration in the Dashboard.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="charges" data-search="charge_already_captured charge_already_captured attempting to capture a charge that has already been captured. check charge status before attempting capture. use `charge.captured` to verify state. implement idempotency to prevent double-capture in retry scenarios. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">charge_already_captured</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Charges</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">Attempting to capture a charge that has already been captured.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Check charge status before attempting capture. Use `charge.captured` to verify state. Implement idempotency to prevent double-capture in retry scenarios.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="refunds" data-search="charge_already_refunded charge_already_refunded attempting to refund a charge that has already been fully refunded. check `charge.refunded` and `charge.amount_refunded` before issuing a refund. track refund state in your database to prevent duplicate refund attempts. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">charge_already_refunded</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Refunds</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">Attempting to refund a charge that has already been fully refunded.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Check `charge.refunded` and `charge.amount_refunded` before issuing a refund. Track refund state in your database to prevent duplicate refund attempts.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="disputes" data-search="charge_disputed charge_disputed the charge has an active dispute and certain operations (like refunding) are blocked during the dispute process. resolve the dispute first. submit evidence via the stripe dashboard or api. once the dispute is resolved, you can proceed with other operations on the charge. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">charge_disputed</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Disputes</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">The charge has an active dispute and certain operations (like refunding) are blocked during the dispute process.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Resolve the dispute first. Submit evidence via the Stripe Dashboard or API. Once the dispute is resolved, you can proceed with other operations on the charge.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="payouts" data-search="balance_insufficient balance_insufficient attempting to create a payout larger than the available stripe balance. check balance before initiating payouts: `stripe.balance.retrieve()`. set up automatic payouts in the dashboard to avoid manual balance management. account for payout timing differences. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">balance_insufficient</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Payouts</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">Attempting to create a payout larger than the available Stripe balance.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Check balance before initiating payouts: `stripe.balance.retrieve()`. Set up automatic payouts in the Dashboard to avoid manual balance management. Account for payout timing differences.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="ach / bank transfers" data-search="bank_account_declined bank_account_declined the ach debit was declined by the bank. reasons include closed account, insufficient funds, unauthorized debit, or frozen account. contact the customer to verify bank account details. use stripe's bank account verification (micro-deposits or plaid instant verification) before charging. handle `payment_intent.payment_failed` webhooks. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">bank_account_declined</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">ACH / Bank Transfers</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">The ACH debit was declined by the bank. Reasons include closed account, insufficient funds, unauthorized debit, or frozen account.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Contact the customer to verify bank account details. Use Stripe's bank account verification (micro-deposits or Plaid instant verification) before charging. Handle `payment_intent.payment_failed` webhooks.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="webhooks" data-search="webhook_signature_verification_failed webhook_signature_verification_failed the webhook signature cannot be verified. the raw body was modified before verification, the wrong signing secret was used, or the timestamp is outside the tolerance window. use the raw request body for signature verification, not a parsed json body. use `stripe.webhooks.constructevent(rawbody, sig, secret)`. verify you are using the signing secret for the correct endpoint (test vs live, different endpoints have different secrets). ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">webhook_signature_verification_failed</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Webhooks</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">The webhook signature cannot be verified. The raw body was modified before verification, the wrong signing secret was used, or the timestamp is outside the tolerance window.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Use the raw request body for signature verification, not a parsed JSON body. Use `stripe.webhooks.constructEvent(rawBody, sig, secret)`. Verify you are using the signing secret for the correct endpoint (test vs live, different endpoints have different secrets).</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="connect" data-search="connect_account_invalid connect_account_invalid the connected account id in the stripe-account header is invalid, deactivated, or does not belong to your platform. verify the connected account exists and is active: `stripe.accounts.retrieve(accountid)`. handle account deactivation by blocking payouts to inactive accounts. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">connect_account_invalid</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Connect</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">The connected account ID in the Stripe-Account header is invalid, deactivated, or does not belong to your platform.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Verify the connected account exists and is active: `stripe.accounts.retrieve(accountId)`. Handle account deactivation by blocking payouts to inactive accounts.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="connect" data-search="account_country_invalid_address account_country_invalid_address the address provided for a connect account does not match the country of the account. ensure the address country matches the account's country. validate address fields for the specific country's format (postal code format varies by country). ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">account_country_invalid_address</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Connect</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">The address provided for a Connect account does not match the country of the account.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Ensure the address country matches the account's country. Validate address fields for the specific country's format (postal code format varies by country).</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="connect" data-search="platform_api_key_expired platform_api_key_expired the platform api key has expired. this occurs with restricted keys that have expiry set. rotate the api key in the stripe dashboard and update all services using it. implement key rotation monitoring to catch expiry before it impacts users. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">platform_api_key_expired</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Connect</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">The platform API key has expired. This occurs with restricted keys that have expiry set.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Rotate the API key in the Stripe Dashboard and update all services using it. Implement key rotation monitoring to catch expiry before it impacts users.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="payment intents" data-search="payment_intent_unexpected_state payment_intent_unexpected_state an operation was attempted on a paymentintent in an incompatible state. e.g. confirming a paymentintent that has already succeeded or been cancelled. check `payment_intent.status` before performing operations. states: `requires_payment_method`, `requires_confirmation`, `requires_action`, `processing`, `succeeded`, `canceled`. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">payment_intent_unexpected_state</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Payment Intents</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">An operation was attempted on a PaymentIntent in an incompatible state. E.g. confirming a PaymentIntent that has already succeeded or been cancelled.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Check `payment_intent.status` before performing operations. States: `requires_payment_method`, `requires_confirmation`, `requires_action`, `processing`, `succeeded`, `canceled`.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="payment intents" data-search="payment_intent_incompatible_payment_method payment_intent_incompatible_payment_method the payment method type is not included in the paymentintent's `payment_method_types` list. update the paymentintent to include the desired payment method type, or create a new one with the correct types. consider using `automatic_payment_methods: { enabled: true }` to support all stripe-enabled methods. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">payment_intent_incompatible_payment_method</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Payment Intents</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">The payment method type is not included in the PaymentIntent's `payment_method_types` list.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Update the PaymentIntent to include the desired payment method type, or create a new one with the correct types. Consider using `automatic_payment_methods: { enabled: true }` to support all Stripe-enabled methods.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="coupons" data-search="coupon_expired coupon_expired the coupon being applied has passed its `redeem_by` date or has exceeded its `max_redemptions` count. check coupon validity before applying: `stripe.coupons.retrieve(couponid)`. handle the expired state gracefully in the checkout flow. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">coupon_expired</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Coupons</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">The coupon being applied has passed its `redeem_by` date or has exceeded its `max_redemptions` count.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Check coupon validity before applying: `stripe.coupons.retrieve(couponId)`. Handle the expired state gracefully in the checkout flow.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="subscriptions" data-search="plan_not_found plan_not_found the price or plan id referenced in a subscription does not exist or has been archived. use the prices api (not the deprecated plans api). verify the price id in the dashboard. never hardcode price ids; store them in config/env vars. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">plan_not_found</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Subscriptions</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">The Price or Plan ID referenced in a subscription does not exist or has been archived.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Use the Prices API (not the deprecated Plans API). Verify the price ID in the Dashboard. Never hardcode price IDs; store them in config/env vars.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="connectivity" data-search="api_connection_error api_connection_error could not connect to stripe's servers. usually a transient network issue, dns failure, or firewall blocking outbound connections to api.stripe.com. implement retry with exponential backoff. check outbound firewall rules for api.stripe.com on port 443. monitor stripe status at status.stripe.com. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">api_connection_error</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Connectivity</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">Could not connect to Stripe's servers. Usually a transient network issue, DNS failure, or firewall blocking outbound connections to api.stripe.com.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Implement retry with exponential backoff. Check outbound firewall rules for api.stripe.com on port 443. Monitor Stripe status at status.stripe.com.</td>
+  <td style="font-size:11px;color:#4ade80;text-align:center">Yes</td>
+</tr>
+<tr data-cat="stripe server error" data-search="api_error api_error an unexpected error on stripe's end. these are rare. retry with exponential backoff (up to 3-5 times). if the error persists, check status.stripe.com. log the `request_id` from the response header and include it in any support requests. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">api_error</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Stripe Server Error</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">An unexpected error on Stripe's end. These are rare.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Retry with exponential backoff (up to 3-5 times). If the error persists, check status.stripe.com. Log the `request_id` from the response header and include it in any support requests.</td>
+  <td style="font-size:11px;color:#4ade80;text-align:center">Yes</td>
+</tr>
+<tr data-cat="currency" data-search="currency_not_supported currency_not_supported the currency specified is not supported by the payment method or the stripe account's country. check supported currencies for the payment method type in stripe docs. verify the account's settlement currency. use `presentment_currency` to show the customer's local currency while settling in a supported currency. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">currency_not_supported</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Currency</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">The currency specified is not supported by the payment method or the Stripe account's country.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Check supported currencies for the payment method type in Stripe docs. Verify the account's settlement currency. Use `presentment_currency` to show the customer's local currency while settling in a supported currency.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="charges" data-search="amount_too_small amount_too_small the charge amount is below the minimum allowed for the currency (e.g. $0.50 usd, $0.30 eur, 50 jpy). ensure amounts meet the minimum per-currency threshold. check minimums in stripe docs. consider consolidating small charges into a single larger charge. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">amount_too_small</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Charges</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">The charge amount is below the minimum allowed for the currency (e.g. $0.50 USD, $0.30 EUR, 50 JPY).</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Ensure amounts meet the minimum per-currency threshold. Check minimums in Stripe docs. Consider consolidating small charges into a single larger charge.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="charges" data-search="amount_too_large amount_too_large the charge amount exceeds the maximum allowed for the currency. check maximum charge limits per currency in stripe docs. for very large transactions, split into multiple charges or use wire transfers. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">amount_too_large</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Charges</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">The charge amount exceeds the maximum allowed for the currency.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Check maximum charge limits per currency in Stripe docs. For very large transactions, split into multiple charges or use wire transfers.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="customer" data-search="email_invalid email_invalid the email provided for customer creation is not a valid email format. validate email addresses client-side before sending to the api. use a regex or email validation library. the `email` field on customer is optional but must be valid if provided. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">email_invalid</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Customer</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">The email provided for customer creation is not a valid email format.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Validate email addresses client-side before sending to the API. Use a regex or email validation library. The `email` field on Customer is optional but must be valid if provided.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="testing" data-search="test_mode_live_card test_mode_live_card a real card number was used in test mode. stripe blocks real card numbers in test environments. use stripe's test card numbers (e.g. 4242 4242 4242 4242 for visa, 4000 0025 6000 0006 for 3ds). see the full list in stripe's testing documentation. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">test_mode_live_card</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Testing</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">A real card number was used in test mode. Stripe blocks real card numbers in test environments.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Use Stripe's test card numbers (e.g. 4242 4242 4242 4242 for Visa, 4000 0025 6000 0006 for 3DS). See the full list in Stripe's testing documentation.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="payment methods" data-search="payment_method_not_available payment_method_not_available the payment method (sepa, ideal, klarna, etc.) is not enabled for the stripe account or not available in the customer's region. enable the payment method in stripe dashboard under settings > payment methods. verify the account's country supports the method. use `payment_method_types` to restrict what is shown. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">payment_method_not_available</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Payment Methods</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">The payment method (SEPA, iDEAL, Klarna, etc.) is not enabled for the Stripe account or not available in the customer's region.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Enable the payment method in Stripe Dashboard under Settings > Payment methods. Verify the account's country supports the method. Use `payment_method_types` to restrict what is shown.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="setup intents" data-search="setup_intent_unexpected_state setup_intent_unexpected_state an operation was attempted on a setupintent in an incompatible state. check `setup_intent.status` before operations. valid states: `requires_payment_method`, `requires_confirmation`, `requires_action`, `processing`, `succeeded`, `canceled`. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">setup_intent_unexpected_state</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Setup Intents</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">An operation was attempted on a SetupIntent in an incompatible state.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Check `setup_intent.status` before operations. Valid states: `requires_payment_method`, `requires_confirmation`, `requires_action`, `processing`, `succeeded`, `canceled`.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="sepa / ach" data-search="mandate_invalid mandate_invalid the mandate associated with a sepa or ach payment method has been revoked or expired. collect a new mandate from the customer using a setupintent. check mandate status via the mandate object. handle `mandate.updated` webhooks to track mandate state changes. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">mandate_invalid</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">SEPA / ACH</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">The mandate associated with a SEPA or ACH payment method has been revoked or expired.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Collect a new mandate from the customer using a SetupIntent. Check mandate status via the Mandate object. Handle `mandate.updated` webhooks to track mandate state changes.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="financial connections" data-search="financial_connections_account_inactive financial_connections_account_inactive the bank account linked via stripe financial connections has become inactive, closed, or the access token has been revoked by the user. prompt the user to re-link their bank account. handle `financial_connections.account.disconnected` webhooks. check account status before initiating transfers. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">financial_connections_account_inactive</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Financial Connections</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">The bank account linked via Stripe Financial Connections has become inactive, closed, or the access token has been revoked by the user.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Prompt the user to re-link their bank account. Handle `financial_connections.account.disconnected` webhooks. Check account status before initiating transfers.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="connect / transfers" data-search="transfer_source_transaction_insufficient_funds transfer_source_transaction_insufficient_funds the source transaction used for a connect transfer does not have sufficient funds available. verify the charge has been captured and is not in a disputed state before transferring. account for stripe fees when calculating the transferable amount. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">transfer_source_transaction_insufficient_funds</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Connect / Transfers</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">The source transaction used for a Connect transfer does not have sufficient funds available.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Verify the charge has been captured and is not in a disputed state before transferring. Account for Stripe fees when calculating the transferable amount.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+<tr data-cat="tax" data-search="tax_id_invalid tax_id_invalid the tax id number provided does not match the expected format for the given type and country. validate tax id format client-side before submission. different types (vat, ein, abn) have different formats. the error message will indicate the expected format. ">
+  <td style="white-space:nowrap">
+    
+    <span style="font-size:12px;font-weight:700;color:#D4A843">tax_id_invalid</span>
+  </td>
+  <td><span style="font-size:10px;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);white-space:nowrap">Tax</span></td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5">The tax ID number provided does not match the expected format for the given type and country.</td>
+  <td style="font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5">Validate tax ID format client-side before submission. Different types (VAT, EIN, ABN) have different formats. The error message will indicate the expected format.</td>
+  <td style="font-size:11px;color:#f87171;text-align:center">No</td>
+</tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="padding-top:0">
+  <div class="card" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;background:rgba(212,168,67,0.05);border-color:rgba(212,168,67,0.2)">
+    <div>
+      <div style="font-size:11px;font-weight:700;color:#D4A843;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px">Need expert help?</div>
+      <div style="font-size:18px;font-weight:800;color:#fff">FinTech and Payments Services</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.45);margin-top:4px">Architecture review, debugging, and production support</div>
+    </div>
+    <a class="btn-primary" href="https://swifttechco.com/services/finance/fintech-platform" target="_blank" rel="noopener">Talk to a specialist &rarr;</a>
+  </div>
+</div>
+
+
+<footer>
+  <p>This page is the open-source data backing the full comparison article.</p>
+  <p style="margin-top:8px">
+    <a href="https://swifttechco.com/services/finance/fintech-platform" target="_blank" rel="noopener">Read the full analysis at swifttechco.com &rarr;</a>
+    &nbsp;&nbsp;&middot;&nbsp;&nbsp;
+    <a href="https://swifttechco.com" target="_blank" rel="noopener">Swift Tech Co.</a>
+  </p>
+</footer>
+
+<script>
+let activeCat = "all";
+function rows() { return document.querySelectorAll("#errorBody tr"); }
+function doSearch() {
+  const q = document.getElementById("searchInput").value.toLowerCase();
+  let visible = 0;
+  rows().forEach(r => {
+    const matchCat = activeCat === "all" || r.dataset.cat === activeCat;
+    const matchQ   = !q || r.dataset.search.includes(q);
+    r.style.display = matchCat && matchQ ? "" : "none";
+    if (matchCat && matchQ) visible++;
+  });
+  document.getElementById("countLabel").textContent = visible + " errors";
+}
+function filterCat(btn) {
+  activeCat = btn.dataset.cat;
+  document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  doSearch();
+}
+</script>
+</body>
+</html>
