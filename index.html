@@ -59,6 +59,68 @@ footer a{color:#D4A843}
 code{font-family:"JetBrains Mono",monospace;font-size:11px;background:rgba(255,255,255,0.07);padding:1px 6px;border-radius:4px;color:rgba(255,255,255,0.7)}
 .count{font-size:12px;color:rgba(255,255,255,0.35);margin-bottom:16px}
 </style>
+
+    <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Swift Tech Co.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@SwiftTechCo">
+  <meta name="twitter:title" content="Stripe Error Code Reference">
+  <meta name="twitter:description" content="Fix Stripe errors: card_declined, authentication_required, rate_limit, and all common Stripe API errors.">
+  <meta name="author" content="Swift Tech Co.">
+  <meta name="robots" content="index, follow">
+  <script type="application/ld+json">
+  {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Stripe Error Code Reference",
+  "description": "Complete Stripe error code reference with causes and fixes for card_declined, authentication_required, and all common Stripe API errors.",
+  "url": "https://swift-tech-co.github.io/stripe-error-reference/",
+  "author": {
+    "@type": "Organization",
+    "name": "Swift Tech Co.",
+    "url": "https://swifttechco.com"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Swift Tech Co.",
+    "url": "https://swifttechco.com"
+  },
+  "datePublished": "2026-05-26",
+  "dateModified": "2026-05-27"
+}
+  </script>
+  <script type="application/ld+json">
+  {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What does Stripe error card_declined mean?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "card_declined means the card issuing bank refused the transaction. Check the decline_code field for specifics. Common reasons: insufficient funds, card not activated for online transactions, or fraud prevention rules. For legitimate cards, retry once after 24 hours or ask the customer to contact their bank."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the Stripe authentication_required error?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "authentication_required means the card requires 3D Secure (3DS) authentication. Fix: implement Stripe Payment Intents API with automatic 3DS handling, or use Stripe Checkout which handles this automatically. Common for EU cards under PSD2 Strong Customer Authentication."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What causes Stripe rate limit errors?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Stripe enforces 100 read and 100 write requests per second in live mode. Fix: implement exponential backoff retry logic with jitter (wait 1s, 2s, 4s, 8s between retries). Contact Stripe to increase limits if you regularly hit them."
+      }
+    }
+  ]
+}
+  </script>
 </head>
 <body>
 
@@ -644,6 +706,23 @@ code{font-family:"JetBrains Mono",monospace;font-size:11px;background:rgba(255,2
 </div>
 
 
+
+<section style="max-width:760px;margin:0 auto 48px;padding:0 24px">
+  <h2 style="font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:#fff;margin-bottom:4px;padding-bottom:16px;border-bottom:1px solid rgba(212,168,67,0.2)">Frequently Asked Questions</h2>
+  
+    <div style="border-bottom:1px solid rgba(255,255,255,0.06);padding:20px 0">
+      <h3 style="font-family:'Playfair Display',serif;font-size:17px;color:#fff;margin-bottom:10px">What does Stripe error card_declined mean?</h3>
+      <p style="font-size:14px;color:#a8a8b3;line-height:1.8">card_declined means the card issuing bank refused the transaction. Check the decline_code field for specifics. Common reasons: insufficient funds, card not activated for online transactions, or fraud prevention rules. For legitimate cards, retry once after 24 hours or ask the customer to contact their bank.</p>
+    </div>
+    <div style="border-bottom:1px solid rgba(255,255,255,0.06);padding:20px 0">
+      <h3 style="font-family:'Playfair Display',serif;font-size:17px;color:#fff;margin-bottom:10px">What is the Stripe authentication_required error?</h3>
+      <p style="font-size:14px;color:#a8a8b3;line-height:1.8">authentication_required means the card requires 3D Secure (3DS) authentication. Fix: implement Stripe Payment Intents API with automatic 3DS handling, or use Stripe Checkout which handles this automatically. Common for EU cards under PSD2 Strong Customer Authentication.</p>
+    </div>
+    <div style="border-bottom:1px solid rgba(255,255,255,0.06);padding:20px 0">
+      <h3 style="font-family:'Playfair Display',serif;font-size:17px;color:#fff;margin-bottom:10px">What causes Stripe rate limit errors?</h3>
+      <p style="font-size:14px;color:#a8a8b3;line-height:1.8">Stripe enforces 100 read and 100 write requests per second in live mode. Fix: implement exponential backoff retry logic with jitter (wait 1s, 2s, 4s, 8s between retries). Contact Stripe to increase limits if you regularly hit them.</p>
+    </div>
+</section>
 <footer>
   <p>This page is the open-source data backing the full comparison article.</p>
   <p style="margin-top:8px">
